@@ -1,11 +1,10 @@
 <div class="table-responsive">
     <table class="table table-hover">
-        <thead>
+        <thead style="background-color: #337ab7; color: white;">
         {{#each header}}
-            <!--Key: {{@key}}-->
             <tr>
                 {{#each this}}
-                    <th rowspan="{{this.RowSpan}}" colspan="{{this.ColSpan}}"> {{this.Label}}</th>
+                    <th style="border: 1px solid white;" rowspan="{{this.RowSpan}}" colspan="{{this.ColSpan}}"> {{this.Label}}</th>
                 {{/each}}
             </tr>
         {{/each}}
@@ -14,7 +13,7 @@
         {{#each rows}}
             <!-- TODO: remove it from here the style? -->
             {{#if rowShade}}
-                <tr class="info">
+                <tr style="background-color: #8bb8df; color: white;">
             {{else}}
                 <tr>
             {{/if}}
