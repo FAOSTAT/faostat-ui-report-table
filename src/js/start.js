@@ -3,13 +3,15 @@ define([
         'jquery',
         'loglevel',
         'config/Config',
+        'config/Events',
         'globals/Common',
         'underscore',
         'handlebars',
         'text!fs-r-t/html/templates/base_template.hbs',
-        'faostatapiclient'
+        'faostatapiclient',
+        'amplify'
     ],
-    function ($, log, C, Common, _, Handlebars, template, FAOSTATAPIClient) {
+    function ($, log, C, E, Common, _, Handlebars, template, FAOSTATAPIClient) {
 
         'use strict';
 
@@ -27,6 +29,8 @@ define([
 
             this.$CONTAINER = $(this.o.container);
 
+            this.api = new FAOSTATAPIClient();
+
             this.render();
 
         };
@@ -36,7 +40,7 @@ define([
 
             var self = this;
 
-            this.api = new FAOSTATAPIClient();
+            amplify.publish(E.LOADING_SHOW, {container: this.$CONTAINER});
 
             // TODO refactor code
             this.api.reportheaders({
@@ -81,6 +85,8 @@ define([
                     List7AltCodes: null
                 }).then(function(d) {
 
+                    amplify.publish(E.LOADING_HIDE, {container: self.$CONTAINER});
+
                     self._processData(h, d);
 
                 });
@@ -95,7 +101,7 @@ define([
                 dataRows = this._processDataRows(d.data, columnsNumber),
                 t = Handlebars.compile(template);
 
-            this.$CONTAINER.append(t({
+            this.$CONTAINER.html(t({
                 header: headerRows,
                 rows: dataRows
             }));
