@@ -4,7 +4,7 @@
         {{#each header}}
             <tr>
                 {{#each this}}
-                    <th style="border: 1px solid white;" rowspan="{{this.RowSpan}}" colspan="{{this.ColSpan}}"> {{this.Label}}</th>
+                    <th style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}} border: 1px solid white;" rowspan="{{this.RowSpan}}" colspan="{{this.ColSpan}}"> {{this.Label}}</th>
                 {{/each}}
             </tr>
         {{/each}}
@@ -18,7 +18,7 @@
                 <tr>
             {{/if}}
             {{#each data}}
-                    <td>{{this}}</td>
+                    <td style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}}">{{this.label}}</td>
             {{/each}}
             </tr>
         {{/each}}

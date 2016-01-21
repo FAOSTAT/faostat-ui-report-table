@@ -15,7 +15,31 @@ define([
 
         'use strict';
 
-        var defaultOptions = {
+        var REQUEST = {
+
+            // TODO: move in a configuration file
+            datasource: C.DATASOURCE,
+            lang: Common.getLocale(),
+            //List1Codes: [9],
+            //List2Codes: [2011],
+            List1Codes: null,
+            List2Codes: null,
+            List3Codes: null,
+            List4Codes: null,
+            List5Codes: null,
+            List6Codes: null,
+            List7Codes: null,
+            List1AltCodes: null,
+            List2AltCodes: null,
+            List3AltCodes: null,
+            List4AltCodes: null,
+            List5AltCodes: null,
+            List6AltCodes: null,
+            List7AltCodes: null
+
+        },
+        defaultOptions = {
+
         };
 
         function ReportTable() {
@@ -38,52 +62,18 @@ define([
 
         ReportTable.prototype.render = function() {
 
-            var self = this;
+            var self = this,
+                request = $.extend(true, {}, REQUEST, this.o.request);
+
+            request.report_code = this.o.request.domain_code;
 
             amplify.publish(E.LOADING_SHOW, {container: this.$CONTAINER});
 
-            // TODO refactor code
-            this.api.reportheaders({
-                datasource: C.DATASOURCE,
-                domain_code: 'fbs',
-                report_code: 'fbs',
-                lang: Common.getLocale(),
-                List1Codes: [9],
-                List2Codes: [2011],
-                List3Codes: null,
-                List4Codes: null,
-                List5Codes: null,
-                List6Codes: null,
-                List7Codes: null,
-                List1AltCodes: null,
-                List2AltCodes: null,
-                List3AltCodes: null,
-                List4AltCodes: null,
-                List5AltCodes: null,
-                List6AltCodes: null,
-                List7AltCodes: null
-            }).then(function(h) {
 
-                self.api.reportdata({
-                    datasource: C.DATASOURCE,
-                    domain_code: 'fbs',
-                    report_code: 'fbs',
-                    lang: Common.getLocale(),
-                    List1Codes: [9],
-                    List2Codes: [2011],
-                    List3Codes: null,
-                    List4Codes: null,
-                    List5Codes: null,
-                    List6Codes: null,
-                    List7Codes: null,
-                    List1AltCodes: null,
-                    List2AltCodes: null,
-                    List3AltCodes: null,
-                    List4AltCodes: null,
-                    List5AltCodes: null,
-                    List6AltCodes: null,
-                    List7AltCodes: null
-                }).then(function(d) {
+            // TODO refactor code
+            this.api.reportheaders(request).then(function(h) {
+
+                self.api.reportdata(request).then(function(d) {
 
                     amplify.publish(E.LOADING_HIDE, {container: self.$CONTAINER});
 
@@ -106,7 +96,7 @@ define([
                 rows: dataRows
             }));
 
-            amplify.publish(E.EXPORT_TABLE_HTML, {container: this.$CONTAINER});
+            //amplify.publish(E.EXPORT_TABLE_HTML, {container: this.$CONTAINER});
 
         };
 
@@ -114,10 +104,13 @@ define([
 
             var r = {};
 
-            _.each(d, function(v) {
+            _.each(d, function(v, index) {
                 if ( !r.hasOwnProperty(v.RowNo)) {
                     r[v.RowNo] = [];
                 }
+
+                v["text-align"] = (v.RowNo === 1)? null: 'center';
+
                 r[v.RowNo].push(v);
             });
 
@@ -151,7 +144,10 @@ define([
                 for(i = 1; i < (columnsNumber + 1); i += 1) {
 
                     if (v.hasOwnProperty('Col' + i)) {
-                        data.push(v['Col' + i]);
+                        data.push({
+                            'text-align': (i === 1)? null: 'right',
+                            label: v['Col' + i]
+                        });
                     }else {
                         data.push('');
                     }
