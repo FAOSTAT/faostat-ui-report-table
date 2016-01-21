@@ -57,7 +57,9 @@ define([
 
         };
 
-        ReportTable.prototype.export = function() {
+        ReportTable.prototype.export = function(config) {
+
+            this.o = $.extend(true, {}, this.o, config);
 
             var self = this,
                 type = this.o.type || 'excel',
