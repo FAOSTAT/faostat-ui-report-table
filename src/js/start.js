@@ -1,4 +1,4 @@
-/*global define, console*/
+/* global define, console, amplify */
 define([
         'jquery',
         'loglevel',
@@ -105,6 +105,8 @@ define([
                 header: headerRows,
                 rows: dataRows
             }));
+
+            amplify.publish(E.EXPORT_TABLE_HTML, {container: this.$CONTAINER});
 
         };
 
