@@ -55,48 +55,70 @@ define([
 
             this.api = new FAOSTATAPIClient();
 
-            this.render();
-
         };
 
-
-        ReportTable.prototype.render = function() {
+        ReportTable.prototype.export = function() {
 
             var self = this,
-                request = $.extend(true, {}, REQUEST, this.o.request);
+                type = this.o.type || 'excel',
+                request = $.extend(true, {}, REQUEST, this.o.request, {report_code: this.o.request.domain_code});
 
-            request.report_code = this.o.request.domain_code;
-
-            amplify.publish(E.LOADING_SHOW, {container: this.$CONTAINER});
-
+            amplify.publish(E.WAITING_SHOW);
 
             // TODO refactor code
+            // TODO check if the table is already rendered and export without make a new request
             this.api.reportheaders(request).then(function(h) {
 
                 self.api.reportdata(request).then(function(d) {
 
-                    amplify.publish(E.LOADING_HIDE, {container: self.$CONTAINER});
+                    amplify.publish(E.WAITING_HIDE);
 
-                    self._processData(h, d);
+                    self._processData(h, d, false);
+
+                    amplify.publish(E.EXPORT_TABLE_HTML, {
+                        container: self.$CONTAINER,
+                        type: type
+                    });
 
                 });
             });
 
         };
 
-        ReportTable.prototype._processData = function (h, d) {
+        ReportTable.prototype.render = function() {
+
+            var self = this,
+                request = $.extend(true, {}, REQUEST, this.o.request, { report_code: this.o.request.domain_code});
+
+            amplify.publish(E.WAITING_SHOW);
+
+            // TODO refactor code
+            this.api.reportheaders(request).then(function(h) {
+
+                self.api.reportdata(request).then(function(d) {
+
+                    amplify.publish(E.WAITING_HIDE);
+
+                    self._processData(h, d, true);
+
+                });
+            });
+
+        };
+
+        ReportTable.prototype._processData = function (h, d, render) {
 
             var headerRows = this._processHeaderRows(h.data),
                 columnsNumber = this._getColumnsNumber(headerRows[1]),
                 dataRows = this._processDataRows(d.data, columnsNumber),
-                t = Handlebars.compile(template);
+                t = Handlebars.compile(template),
+                display = (render === false)? 'none': null;
 
             this.$CONTAINER.html(t({
                 header: headerRows,
-                rows: dataRows
+                rows: dataRows,
+                display: display
             }));
-
-            //amplify.publish(E.EXPORT_TABLE_HTML, {container: this.$CONTAINER});
 
         };
 
