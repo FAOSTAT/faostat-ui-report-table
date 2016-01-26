@@ -19,7 +19,7 @@ define([
 
             // TODO: move in a configuration file
             datasource: C.DATASOURCE,
-            lang: Common.getLocale(),
+            lang: Common.getLocale()
             //List1Codes: [9],
             //List2Codes: [2011],
 
@@ -36,6 +36,8 @@ define([
         ReportTable.prototype.init = function (config) {
 
             this.o = $.extend(true, {}, defaultOptions, config);
+
+            log.info(this.o.container)
 
             this.$CONTAINER = $(this.o.container);
 
