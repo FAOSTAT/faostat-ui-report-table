@@ -22,20 +22,6 @@ define([
             lang: Common.getLocale(),
             //List1Codes: [9],
             //List2Codes: [2011],
-            List1Codes: null,
-            List2Codes: null,
-            List3Codes: null,
-            List4Codes: null,
-            List5Codes: null,
-            List6Codes: null,
-            List7Codes: null,
-            List1AltCodes: null,
-            List2AltCodes: null,
-            List3AltCodes: null,
-            List4AltCodes: null,
-            List5AltCodes: null,
-            List6AltCodes: null,
-            List7AltCodes: null
 
         },
         defaultOptions = {
@@ -63,7 +49,11 @@ define([
 
             var self = this,
                 type = this.o.type || 'excel',
-                request = $.extend(true, {}, REQUEST, this.o.request, {report_code: this.o.request.domain_code});
+                request = $.extend(true, {},
+                    REQUEST,
+                    this.o.request,
+                    { report_code: this.o.request.domain_code }
+                );
 
             amplify.publish(E.WAITING_SHOW);
 
@@ -91,6 +81,8 @@ define([
 
             var self = this,
                 request = $.extend(true, {}, REQUEST, this.o.request, { report_code: this.o.request.domain_code});
+
+            log.info(request)
 
             amplify.publish(E.WAITING_SHOW);
 
@@ -128,7 +120,7 @@ define([
 
             var r = {};
 
-            _.each(d, function(v, index) {
+            _.each(d, function(v) {
                 if ( !r.hasOwnProperty(v.RowNo)) {
                     r[v.RowNo] = [];
                 }
@@ -190,7 +182,7 @@ define([
 
         };
 
-        ReportTable.prototype.onError = function () {
+       ReportTable.prototype.onError = function () {
 
         };
 
