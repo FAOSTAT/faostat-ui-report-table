@@ -8,10 +8,11 @@ define([
         'underscore',
         'handlebars',
         'text!fs-r-t/html/templates/base_template.hbs',
+        'i18n!nls/download',
         'faostatapiclient',
         'amplify'
     ],
-    function ($, log, C, E, Common, _, Handlebars, template, FAOSTATAPIClient) {
+    function ($, log, C, E, Common, _, Handlebars, template, i18nLabels, FAOSTATAPIClient) {
 
         'use strict';
 
@@ -95,10 +96,24 @@ define([
 
                     amplify.publish(E.WAITING_HIDE);
 
-                    self._processData(h, d, true);
+                    if (d.data.length > 0) {
+
+                        self._processData(h, d, true);
+
+                    }else {
+
+                        self.noDataAvailable();
+
+                    }
 
                 });
             });
+
+        };
+
+        ReportTable.prototype.noDataAvailable = function () {
+
+            this.$CONTAINER.html('<h1>' + i18nLabels.no_data_available_for_current_selection +'</h1>');
 
         };
 
