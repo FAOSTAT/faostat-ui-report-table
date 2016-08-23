@@ -2,9 +2,7 @@
 define([
         'jquery',
         'loglevel',
-        'config/Config',
         'config/Events',
-        'globals/Common',
         'underscore',
         'handlebars',
         'text!fs-r-t/html/templates/base_template.hbs',
@@ -12,15 +10,13 @@ define([
         'faostatapiclient',
         'amplify'
     ],
-    function ($, log, C, E, Common, _, Handlebars, template, i18nLabels, FAOSTATAPIClient) {
+    function ($, log, E, _, Handlebars, template, i18nLabels, API) {
 
         'use strict';
 
         var REQUEST = {
 
             // TODO: move in a configuration file
-            datasource: C.DATASOURCE,
-            lang: Common.getLocale()
             //List1Codes: [9],
             //List2Codes: [2011],
 
@@ -42,8 +38,6 @@ define([
 
             this.$CONTAINER = $(this.o.container);
 
-            this.api = new FAOSTATAPIClient();
-
         };
 
         ReportTable.prototype.export = function(config) {
@@ -62,9 +56,9 @@ define([
 
             // TODO refactor code
             // TODO check if the table is already rendered and export without make a new request
-            this.api.reportheaders(request).then(function(h) {
+            API.reportheaders(request).then(function(h) {
 
-                self.api.reportdata(request).then(function(d) {
+                API.reportdata(request).then(function(d) {
 
                     amplify.publish(E.WAITING_HIDE);
 
@@ -90,9 +84,9 @@ define([
             amplify.publish(E.WAITING_SHOW);
 
             // TODO refactor code
-            this.api.reportheaders(request).then(function(h) {
+            API.reportheaders(request).then(function(h) {
 
-                self.api.reportdata(request).then(function(d) {
+                API.reportdata(request).then(function(d) {
 
                     amplify.publish(E.WAITING_HIDE);
 
