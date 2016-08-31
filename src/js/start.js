@@ -64,8 +64,12 @@ define([
 
                     self._processData(h, d, false);
 
+                    log.info(self.$CONTAINER.find("table"));
+                    log.info(self.$CONTAINER);
+
                     amplify.publish(E.EXPORT_TABLE_HTML, {
                         container: self.$CONTAINER,
+                        //container: "#test",
                         type: type
                     });
 
@@ -78,8 +82,6 @@ define([
 
             var self = this,
                 request = $.extend(true, {}, REQUEST, this.o.request, { report_code: this.o.request.domain_code});
-
-            log.info(request)
 
             amplify.publish(E.WAITING_SHOW);
 
