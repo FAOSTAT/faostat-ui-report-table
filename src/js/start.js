@@ -13,7 +13,7 @@ define([
         //'datatables-responsive',
         //'datatables-fixedheader',
         //'datatables-colreorder',
-        'datatables.net-buttons-bs',
+        //'datatables.net-buttons-bs',
         'amplify'
     ],
     function ($, log, E, _, Handlebars, template, i18nLabels, API) {
@@ -129,8 +129,9 @@ define([
                 id: id
             }));
 
-            this.$CONTAINER.find('#' + id).DataTable({
+            var table = this.$CONTAINER.find('#' + id).DataTable({
                 scrollY:        "450px",
+                //scrollY:        '50vh',
                 scrollX:        true,
                 scrollCollapse: true,
                 paging:         false,
@@ -147,6 +148,10 @@ define([
                 language: {
                     search: "Search"
                 },
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'excel', 'pdf'
+                ]
 
 /*                dom: 'Bfrtip',
                 buttons: [
@@ -156,7 +161,6 @@ define([
                     leftColumns: 1
                 }*/
             });
-
 
         };
 
