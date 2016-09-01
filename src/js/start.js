@@ -13,7 +13,7 @@ define([
         //'datatables-responsive',
         //'datatables-fixedheader',
         //'datatables-colreorder',
-        'datatables.net-buttons-bs',
+        //'datatables.net-buttons-bs',
         'amplify'
     ],
     function ($, log, E, _, Handlebars, template, i18nLabels, API) {
@@ -45,7 +45,7 @@ define([
             this.o = $.extend(true, {}, this.o, config);
 
             var self = this,
-                type = this.o.type || 'excel',
+                type = this.o.type || 'xls',
                 request = $.extend(true, {},
                     REQUEST,
                     this.o.request,
@@ -63,9 +63,6 @@ define([
                     amplify.publish(E.WAITING_HIDE);
 
                     self._processData(h, d, false);
-
-                    log.info(self.$CONTAINER.find("table"));
-                    log.info(self.$CONTAINER);
 
                     amplify.publish(E.EXPORT_TABLE_HTML, {
                         container: self.$CONTAINER,
@@ -91,6 +88,8 @@ define([
                 API.reportdata(request).then(function(d) {
 
                     amplify.publish(E.WAITING_HIDE);
+
+                    amplify.publish(E.SCROLL_TO_SELECTOR, {container: self.$CONTAINER});
 
                     if (d.data.length > 0) {
 
@@ -129,8 +128,9 @@ define([
                 id: id
             }));
 
-            this.$CONTAINER.find('#' + id).DataTable({
+            var table = this.$CONTAINER.find('#' + id).DataTable({
                 scrollY:        "450px",
+                //scrollY:        '50vh',
                 scrollX:        true,
                 scrollCollapse: true,
                 paging:         false,
@@ -147,6 +147,10 @@ define([
                 language: {
                     search: "Search"
                 },
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'excel', 'pdf'
+                ]
 
 /*                dom: 'Bfrtip',
                 buttons: [
@@ -156,7 +160,6 @@ define([
                     leftColumns: 1
                 }*/
             });
-
 
         };
 
