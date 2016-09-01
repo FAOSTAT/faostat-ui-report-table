@@ -1,26 +1,26 @@
-<div class="table-responsive" style="{{#if display}}display:{{display}};{{/if}}">
-    <table id="test" class="table-hover fs-report-table" data-tableexport-display="always">
+<div style="{{#if display}}display:{{display}};{{/if}}">
+    <table id="{{id}}" class="fs-report-table table hover responsive" cellspacing="0" width="100%" data-tableexport-display="always">
         <thead>
-        {{#each header}}
-            <tr>
-                {{#each this}}
-                    <th style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}}" rowspan="{{this.RowSpan}}" colspan="{{this.ColSpan}}"> {{this.Label}}</th>
-                {{/each}}
-            </tr>
-        {{/each}}
+            {{#each header}}
+                <tr>
+                    {{#each this}}
+                        <th style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}}"
+                            rowspan="{{this.RowSpan}}"
+                            colspan="{{this.ColSpan}}">
+                            {{this.Label}}
+                        </th>
+                    {{/each}}
+                </tr>
+            {{/each}}
         </thead>
         <tbody>
-        {{#each rows}}
-            {{#if rowShade}}
-                <tr class="row-shade">
-            {{else}}
-                <tr>
-            {{/if}}
-            {{#each data}}
-                    <td style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}}">{{this.label}}</td>
+            {{#each rows}}
+                <tr {{#if rowShade}}class="row-shade"{{/if}}>
+                    {{#each data}}
+                        <td style="{{#if this.text-align}}text-align:{{this.text-align}};{{/if}}">{{this.label}}</td>
+                    {{/each}}
+                </tr>
             {{/each}}
-            </tr>
-        {{/each}}
         </tbody>
     </table>
 </div>

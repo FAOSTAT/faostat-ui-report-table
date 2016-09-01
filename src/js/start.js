@@ -8,6 +8,12 @@ define([
         'text!fs-r-t/html/templates/base_template.hbs',
         'i18n!nls/download',
         'faostatapiclient',
+        'datatables.net-bs',
+        'datatables-fixedcolumns',
+        //'datatables-responsive',
+        //'datatables-fixedheader',
+        //'datatables-colreorder',
+        'datatables.net-buttons-bs',
         'amplify'
     ],
     function ($, log, E, _, Handlebars, template, i18nLabels, API) {
@@ -16,14 +22,10 @@ define([
 
         var REQUEST = {
 
-            // TODO: move in a configuration file
-            //List1Codes: [9],
-            //List2Codes: [2011],
+            },
+            defaultOptions = {
 
-        },
-        defaultOptions = {
-
-        };
+            };
 
         function ReportTable() {
 
@@ -33,8 +35,6 @@ define([
         ReportTable.prototype.init = function (config) {
 
             this.o = $.extend(true, {}, defaultOptions, config);
-
-            log.info(this.o.container)
 
             this.$CONTAINER = $(this.o.container);
 
@@ -119,13 +119,44 @@ define([
                 columnsNumber = this._getColumnsNumber(headerRows[1]),
                 dataRows = this._processDataRows(d.data, columnsNumber),
                 t = Handlebars.compile(template),
-                display = (render === false)? 'none': null;
+                display = (render === false)? 'none': null,
+                id = 'table-' + Math.random().toString().replace('.', '');
 
             this.$CONTAINER.html(t({
                 header: headerRows,
                 rows: dataRows,
-                display: display
+                display: display,
+                id: id
             }));
+
+            this.$CONTAINER.find('#' + id).DataTable({
+                scrollY:        "450px",
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         false,
+                //responsive: true,
+                searching: true,
+                ordering: true,
+                info:     false,
+                colReorder: true,
+                //fixedHeader: true,
+                aaSorting: [],
+                columnDefs: [
+                    //{ width: '20%', targets: 0 }
+                ],
+                language: {
+                    search: "Search"
+                },
+
+/*                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],*/
+               /* fixedColumns: {
+                    leftColumns: 1
+                }*/
+            });
+
 
         };
 
@@ -133,12 +164,12 @@ define([
 
             var r = {};
 
-            _.each(d, function(v) {
-                if ( !r.hasOwnProperty(v.RowNo)) {
+            _.each(d, function(v, index) {
+                if (!r.hasOwnProperty(v.RowNo)) {
                     r[v.RowNo] = [];
                 }
 
-                v["text-align"] = (v.RowNo === 1)? null: 'center';
+                v["text-align"] = (v.RowNo === 1) ? null : 'center';
 
                 r[v.RowNo].push(v);
             });
@@ -147,20 +178,19 @@ define([
 
         };
 
-       ReportTable.prototype._getColumnsNumber = function (r) {
+        ReportTable.prototype._getColumnsNumber = function (r) {
 
             var t = 0;
 
             _.each(r, function(d) {
                 t = t + d.ColSpan;
-
             });
 
             return t;
 
         };
 
-       ReportTable.prototype._processDataRows = function (d, columnsNumber) {
+        ReportTable.prototype._processDataRows = function (d, columnsNumber) {
 
             var rows = [],
                 i;
@@ -180,7 +210,6 @@ define([
                     }else {
                         data.push('');
                     }
-
                 }
 
                 // add row
@@ -195,7 +224,7 @@ define([
 
         };
 
-       ReportTable.prototype.onError = function () {
+        ReportTable.prototype.onError = function () {
 
         };
 
