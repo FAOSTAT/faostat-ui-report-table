@@ -70,15 +70,21 @@ define([
                         type: type
                     });
 
-                });
-            });
+                }).fail(function() {
+                    amplify.publish(E.WAITING_HIDE);
+                })
+            }).fail(function() {
+                amplify.publish(E.WAITING_HIDE);
+            })
 
         };
 
         ReportTable.prototype.render = function() {
 
             var self = this,
-                request = $.extend(true, {}, REQUEST, this.o.request, { report_code: this.o.request.domain_code});
+                request = $.extend(true, {}, REQUEST, this.o.request, {
+                    report_code: this.o.request.domain_code
+                });
 
             amplify.publish(E.WAITING_SHOW);
 
@@ -101,8 +107,12 @@ define([
 
                     }
 
-                });
-            });
+                }).fail(function() {
+                    amplify.publish(E.WAITING_HIDE);
+                })
+            }).fail(function() {
+                amplify.publish(E.WAITING_HIDE);
+            })
 
         };
 
