@@ -45,7 +45,7 @@ define([
             this.o = $.extend(true, {}, this.o, config);
 
             var self = this,
-                type = this.o.type || 'excel',
+                type = this.o.type || 'xls',
                 request = $.extend(true, {},
                     REQUEST,
                     this.o.request,
@@ -64,24 +64,27 @@ define([
 
                     self._processData(h, d, false);
 
-                    log.info(self.$CONTAINER.find("table"));
-                    log.info(self.$CONTAINER);
-
                     amplify.publish(E.EXPORT_TABLE_HTML, {
                         container: self.$CONTAINER,
                         //container: "#test",
                         type: type
                     });
 
-                });
-            });
+                }).fail(function() {
+                    amplify.publish(E.WAITING_HIDE);
+                })
+            }).fail(function() {
+                amplify.publish(E.WAITING_HIDE);
+            })
 
         };
 
         ReportTable.prototype.render = function() {
 
             var self = this,
-                request = $.extend(true, {}, REQUEST, this.o.request, { report_code: this.o.request.domain_code});
+                request = $.extend(true, {}, REQUEST, this.o.request, {
+                    report_code: this.o.request.domain_code
+                });
 
             amplify.publish(E.WAITING_SHOW);
 
@@ -91,6 +94,8 @@ define([
                 API.reportdata(request).then(function(d) {
 
                     amplify.publish(E.WAITING_HIDE);
+
+                    amplify.publish(E.SCROLL_TO_SELECTOR, {container: self.$CONTAINER});
 
                     if (d.data.length > 0) {
 
@@ -102,8 +107,12 @@ define([
 
                     }
 
-                });
-            });
+                }).fail(function() {
+                    amplify.publish(E.WAITING_HIDE);
+                })
+            }).fail(function() {
+                amplify.publish(E.WAITING_HIDE);
+            })
 
         };
 
