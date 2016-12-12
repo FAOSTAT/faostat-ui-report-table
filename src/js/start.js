@@ -242,8 +242,7 @@ define([
         };
 
         ReportTable.prototype.destroy = function () {
-
-
+            // TODO: proper destroy
         };
 
         return ReportTable;
